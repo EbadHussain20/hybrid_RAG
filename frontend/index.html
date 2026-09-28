@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>NimbusForge Internal Knowledge Assistant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root {
+    --bg: #0b0d12; --panel: #12151c; --panel-2: #171b24; --border: #262b36;
+    --text: #e6e9ef; --muted: #8b93a3; --accent: #6ea8fe; --accent-2: #3fd0c9;
+    --good: #4ade80; --warn: #fbbf24; --bad: #f87171;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+  }
+  header {
+    padding: 20px 28px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  header h1 { font-size: 17px; margin: 0; font-weight: 600; }
+  header .badge {
+    font-size: 11px; color: var(--muted); border: 1px solid var(--border);
+    padding: 3px 8px; border-radius: 20px;
+  }
+  .layout { display: grid; grid-template-columns: 300px 1fr; gap: 0; min-height: calc(100vh - 61px); }
+  aside {
+    border-right: 1px solid var(--border); padding: 20px; background: var(--panel);
+  }
+  aside h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 12px; }
+  .btn {
+    background: var(--accent); color: #06121f; border: none; border-radius: var(--radius);
+    padding: 9px 14px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; margin-bottom: 8px;
+  }
+  .btn.secondary { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  #ingestStatus, #indexStatus { font-size: 12px; color: var(--muted); margin-top: 6px; min-height: 16px; }
+  .stat-row { display: flex; justify-content: space-between; font-size: 12.5px; padding: 5px 0; border-bottom: 1px dashed var(--border); }
+  .stat-row span:last-child { color: var(--accent-2); font-weight: 600; }
+  main { padding: 28px; max-width: 900px; }
+  .query-box { display: flex; gap: 8px; margin-bottom: 6px; }
+  #question {
+    flex: 1; background: var(--panel-2); border: 1px solid var(--border); color: var(--text);
+    border-radius: var(--radius); padding: 12px 14px; font-size: 14px;
+  }
+  .controls { display: flex; gap: 14px; align-items: center; font-size: 12px; color: var(--muted); margin-bottom: 18px; }
+  select { background: var(--panel-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; }
+  .answer-card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 20px; margin-bottom: 18px; white-space: pre-wrap; line-height: 1.6; font-size: 14.5px;
+  }
+  .answer-card .cite { color: var(--accent); font-weight: 700; cursor: pointer; }
+  .pill-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 10px 0 20px; }
+  .pill { font-size: 11.5px; border-radius: 20px; padding: 4px 10px; border: 1px solid var(--border); }
+  .pill.good { color: var(--good); border-color: rgba(74,222,128,.4); }
+  .pill.bad { color: var(--bad); border-color: rgba(248,113,113,.4); }
+  .pill.info { color: var(--muted); }
+  .section-title { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 22px 0 10px; }
+  .source-card {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 12px 14px; margin-bottom: 8px; cursor: pointer;
+  }
+  .source-card .src-head { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .source-card .src-title { font-weight: 600; }
+  .source-card .src-meta { color: var(--muted); font-size: 11.5px; margin-top: 3px; }
+  .source-card .src-scores { display: flex; gap: 10px; font-size: 11px; color: var(--accent-2); margin-top: 6px; }
+  .source-card .src-content {
+    display: none; margin-top: 10px; font-size: 12.5px; color: var(--muted);
+    border-top: 1px dashed var(--border); padding-top: 8px; white-space: pre-wrap;
+  }
+  .source-card.expanded .src-content { display: block; }
+  .latency-bar { display: flex; gap: 14px; font-size: 11px; color: var(--muted); margin-top: 8px; flex-wrap: wrap; }
+  .empty-hint { color: var(--muted); font-size: 13px; }
+  .loading { color: var(--accent); font-size: 13px; }
+  .example-q {
+    text-align: left; background: transparent; border: none; color: var(--accent);
+    font-size: 12.5px; cursor: pointer; padding: 4px 0; display: block;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🔎 NimbusForge Internal Knowledge Assistant</h1>
+  <span class="badge">Hybrid RAG · Dense + BM25 · Grounded Generation</span>
+</header>
+
+<div class="layout">
+  <aside>
+    <h2>Indexing</h2>
+    <button class="btn secondary" id="ingestBtn">1. Ingest documents</button>
+    <div id="ingestStatus"></div>
+    <button class="btn secondary" id="indexBtn">2. Build index</button>
+    <div id="indexStatus"></div>
+
+    <h2 style="margin-top:24px">Index status</h2>
+    <div class="stat-row"><span>Chunks indexed</span><span id="statChunks">–</span></div>
+    <div class="stat-row"><span>Documents</span><span id="statDocs">–</span></div>
+    <div class="stat-row"><span>Embedding backend</span><span id="statEmbed">–</span></div>
+    <div class="stat-row"><span>Fusion method</span><span id="statFusion">–</span></div>
+    <div class="stat-row"><span>Reranking</span><span id="statRerank">–</span></div>
+
+    <h2 style="margin-top:24px">Try an example</h2>
+    <button class="example-q" data-q="What is the employee password policy?">What is the employee password policy?</button>
+    <button class="example-q" data-q="Can employees work remotely?">Can employees work remotely?</button>
+    <button class="example-q" data-q="What is the security incident reporting process?">What is the security incident reporting process?</button>
+    <button class="example-q" data-q="Which policy covers vacation approval?">Which policy covers vacation approval?</button>
+    <button class="example-q" data-q="What is the company's policy on providing company cars?">A no-answer example (company cars)</button>
+  </aside>
+
+  <main>
+    <div class="query-box">
+      <input id="question" type="text" placeholder="Ask about internal policy, engineering, HR, security, finance..." />
+      <button class="btn" id="askBtn" style="width:120px">Ask</button>
+    </div>
+    <div class="controls">
+      <label>Search mode
+        <select id="mode">
+          <option value="hybrid" selected>Hybrid</option>
+          <option value="dense">Dense only</option>
+          <option value="sparse">Sparse (BM25) only</option>
+        </select>
+      </label>
+      <label>Top K
+        <select id="topk">
+          <option>3</option><option selected>5</option><option>8</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="resultArea">
+      <p class="empty-hint">Ingest and index the sample documents on the left, then ask a question to see a grounded answer with inline citations.</p>
+    </div>
+  </main>
+</div>
+
+<script>
+const API = "";
+
+async function refreshMetrics() {
+  try {
+    const r = await fetch(API + "/metrics");
+    const m = await r.json();
+    document.getElementById("statChunks").textContent = m.num_indexed_chunks;
+    document.getElementById("statDocs").textContent = m.num_indexed_documents;
+    document.getElementById("statEmbed").textContent = m.embedding_provider;
+    document.getElementById("statFusion").textContent = m.fusion_method;
+    document.getElementById("statRerank").textContent = m.reranking_enabled ? "on" : "off";
+  } catch (e) { /* ignore until server is up */ }
+}
+refreshMetrics();
+setInterval(refreshMetrics, 5000);
+
+document.getElementById("ingestBtn").onclick = async () => {
+  const el = document.getElementById("ingestStatus");
+  el.textContent = "Ingesting...";
+  const r = await fetch(API + "/ingest", { method: "POST" });
+  const j = await r.json();
+  el.textContent = `Processed ${j.files_processed} files (${j.files_skipped_unchanged} unchanged, ${j.files_errored} errors)`;
+};
+
+document.getElementById("indexBtn").onclick = async () => {
+  const el = document.getElementById("indexStatus");
+  el.textContent = "Building index...";
+  const r = await fetch(API + "/index", { method: "POST" });
+  const j = await r.json();
+  el.textContent = `Indexed ${j.num_chunks} chunks across ${j.num_documents} documents`;
+  refreshMetrics();
+};
+
+document.querySelectorAll(".example-q").forEach(btn => {
+  btn.onclick = () => { document.getElementById("question").value = btn.dataset.q; askQuestion(); };
+});
+
+document.getElementById("askBtn").onclick = askQuestion;
+document.getElementById("question").addEventListener("keydown", e => { if (e.key === "Enter") askQuestion(); });
+
+function scoreClass(v) { return v ? "good" : "bad"; }
+
+function renderAnswerWithCitations(text) {
+  const body = text.split("\nSources:")[0];
+  return body.replace(/\[(\d+)\]/g, (m, n) => `<span class="cite" onclick="highlightSource(${n})">[${n}]</span>`);
+}
+
+function highlightSource(marker) {
+  document.querySelectorAll(".source-card").forEach(c => c.classList.remove("expanded"));
+  const el = document.getElementById("source-" + marker);
+  if (el) { el.classList.add("expanded"); el.scrollIntoView({behavior: "smooth", block: "center"}); }
+}
+
+async function askQuestion() {
+  const question = document.getElementById("question").value.trim();
+  if (!question) return;
+  const topK = parseInt(document.getElementById("topk").value, 10);
+  const resultArea = document.getElementById("resultArea");
+  resultArea.innerHTML = '<p class="loading">Retrieving and generating grounded answer...</p>';
+
+  try {
+    const r = await fetch(API + "/query", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ question, top_k: topK }),
+    });
+    if (!r.ok) {
+      const err = await r.json();
+      resultArea.innerHTML = `<p class="empty-hint">Error: ${err.detail || r.statusText}</p>`;
+      return;
+    }
+    const data = await r.json();
+    render(data);
+  } catch (e) {
+    resultArea.innerHTML = `<p class="empty-hint">Request failed: ${e}</p>`;
+  }
+}
+
+function render(data) {
+  const resultArea = document.getElementById("resultArea");
+  const g = data.grounding, cv = data.citation_validation;
+
+  let html = `<div class="answer-card">${renderAnswerWithCitations(data.answer)}</div>`;
+
+  html += `<div class="pill-row">`;
+  html += `<span class="pill ${scoreClass(g.supported)}">Grounded: ${g.supported}</span>`;
+  html += `<span class="pill ${scoreClass(cv.valid)}">Citations valid: ${cv.valid} (${cv.citations_checked} checked)</span>`;
+  html += `<span class="pill info">Provider: ${data.llm_provider} / ${data.model}</span>`;
+  html += `<span class="pill info">Fusion: ${data.retrieval.fusion_method}${data.retrieval.reranking_applied ? " + rerank" : ""}</span>`;
+  html += `</div>`;
+
+  html += `<div class="latency-bar">
+    <span>dense: ${data.latency.dense_retrieval_ms.toFixed(1)}ms</span>
+    <span>sparse: ${data.latency.sparse_retrieval_ms.toFixed(1)}ms</span>
+    <span>fusion: ${data.latency.fusion_ms.toFixed(1)}ms</span>
+    <span>rerank: ${data.latency.reranking_ms.toFixed(1)}ms</span>
+    <span>llm: ${data.latency.llm_ms.toFixed(1)}ms</span>
+    <span><b>total: ${data.latency.total_ms.toFixed(1)}ms</b></span>
+  </div>`;
+
+  html += `<div class="section-title">Sources</div>`;
+  if (data.sources.length === 0) {
+    html += `<p class="empty-hint">No sources were cited (likely a no-answer response).</p>`;
+  }
+  data.sources.forEach(s => {
+    html += `<div class="source-card" id="source-${s.marker}" onclick="this.classList.toggle('expanded')">
+      <div class="src-head">
+        <span class="src-title">[${s.marker}] ${s.document_title}${s.section ? " — " + s.section : ""}</span>
+      </div>
+      <div class="src-meta">${s.source_path} · chunk ${s.chunk_id}</div>
+      <div class="src-content">${s.snippet}</div>
+    </div>`;
+  });
+
+  html += `<div class="section-title">Retrieval debug (hybrid results)</div>`;
+  html += `<div class="source-card" style="cursor:default">`;
+  data.retrieval.hybrid_results.forEach(r => {
+    html += `<div class="src-scores">
+      <span>#${r.rank}</span><span>${r.document_title}</span>
+      <span>dense ${r.dense_score?.toFixed(3) ?? "–"}</span>
+      <span>sparse ${r.sparse_score?.toFixed(3) ?? "–"}</span>
+      <span>fusion ${r.fusion_score?.toFixed(3) ?? "–"}</span>
+      <span>rerank ${r.rerank_score != null ? r.rerank_score.toFixed(3) : "–"}</span>
+    </div>`;
+  });
+  html += `</div>`;
+
+  resultArea.innerHTML = html;
+}
+</script>
+</body>
+</html>

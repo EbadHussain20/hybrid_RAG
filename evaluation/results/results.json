@@ -1,0 +1,389 @@
+{
+  "num_questions": 30,
+  "embedding_provider": "tfidf_svd",
+  "fusion_method": "rrf",
+  "llm_provider_used": {
+    "id": "q01",
+    "category": "direct_factual",
+    "question": "How often must employees rotate their passwords?",
+    "expected_no_answer": false,
+    "produced_no_answer": false,
+    "citations_valid": true,
+    "num_citations": 1,
+    "grounded": true,
+    "total_latency_ms": 9.5
+  },
+  "retrieval_comparison": {
+    "dense_only": {
+      "recall@1": 0.75,
+      "recall@3": 0.923,
+      "recall@5": 0.962,
+      "precision@1": 0.846,
+      "precision@3": 0.628,
+      "precision@5": 0.485,
+      "mrr": 0.904,
+      "hit_rate": 0.962,
+      "num_questions_evaluated": 26
+    },
+    "sparse_only": {
+      "recall@1": 0.731,
+      "recall@3": 0.923,
+      "recall@5": 1.0,
+      "precision@1": 0.846,
+      "precision@3": 0.59,
+      "precision@5": 0.438,
+      "mrr": 0.904,
+      "hit_rate": 1.0,
+      "num_questions_evaluated": 26
+    },
+    "hybrid_rrf": {
+      "recall@1": 0.712,
+      "recall@3": 0.942,
+      "recall@5": 0.981,
+      "precision@1": 0.808,
+      "precision@3": 0.603,
+      "precision@5": 0.5,
+      "mrr": 0.886,
+      "hit_rate": 1.0,
+      "num_questions_evaluated": 26
+    }
+  },
+  "generation_eval": {
+    "citation_validity_rate": 1.0,
+    "groundedness_rate": 1.0,
+    "no_answer_accuracy": 0.5,
+    "num_questions": 30
+  },
+  "per_question": [
+    {
+      "id": "q01",
+      "category": "direct_factual",
+      "question": "How often must employees rotate their passwords?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 9.5
+    },
+    {
+      "id": "q02",
+      "category": "direct_factual",
+      "question": "How many failed login attempts trigger an account lockout?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 8.25
+    },
+    {
+      "id": "q03",
+      "category": "direct_factual",
+      "question": "How many paid sick days do employees receive per year?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 2,
+      "grounded": true,
+      "total_latency_ms": 5.44
+    },
+    {
+      "id": "q04",
+      "category": "direct_factual",
+      "question": "What is the home office stipend amount for approved remote employees?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 8.86
+    },
+    {
+      "id": "q05",
+      "category": "direct_factual",
+      "question": "How many weeks of paid parental leave do primary caregivers receive?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 2,
+      "grounded": true,
+      "total_latency_ms": 7.76
+    },
+    {
+      "id": "q06",
+      "category": "semantic",
+      "question": "If my laptop gets stolen, what should I do?",
+      "expected_no_answer": false,
+      "produced_no_answer": true,
+      "citations_valid": true,
+      "num_citations": 0,
+      "grounded": true,
+      "total_latency_ms": 7.06
+    },
+    {
+      "id": "q07",
+      "category": "semantic",
+      "question": "I want to take a two week trip abroad while working, is that allowed?",
+      "expected_no_answer": false,
+      "produced_no_answer": true,
+      "citations_valid": true,
+      "num_citations": 0,
+      "grounded": true,
+      "total_latency_ms": 10.54
+    },
+    {
+      "id": "q08",
+      "category": "semantic",
+      "question": "How does the company decide which new features to build?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 5.41
+    },
+    {
+      "id": "q09",
+      "category": "semantic",
+      "question": "What happens if my performance rating is low?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 5.44
+    },
+    {
+      "id": "q10",
+      "category": "semantic",
+      "question": "How is a lost office badge handled?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 2,
+      "grounded": true,
+      "total_latency_ms": 5.85
+    },
+    {
+      "id": "q11",
+      "category": "keyword_heavy",
+      "question": "MFA multi-factor authentication customer data systems",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 4,
+      "grounded": true,
+      "total_latency_ms": 6.04
+    },
+    {
+      "id": "q12",
+      "category": "keyword_heavy",
+      "question": "RICE framework Reach Impact Confidence Effort",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 5.41
+    },
+    {
+      "id": "q13",
+      "category": "keyword_heavy",
+      "question": "per diem meals domestic international travel",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 5.47
+    },
+    {
+      "id": "q14",
+      "category": "keyword_heavy",
+      "question": "PagerDuty Sev1 acknowledge minutes on-call",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 2,
+      "grounded": true,
+      "total_latency_ms": 6.37
+    },
+    {
+      "id": "q15",
+      "category": "keyword_heavy",
+      "question": "capital expenditure $50,000 CFO approval",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 7.0
+    },
+    {
+      "id": "q16",
+      "category": "multi_document",
+      "question": "What is the full incident response process from an employee noticing something suspicious through resolution?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 2,
+      "grounded": true,
+      "total_latency_ms": 7.01
+    },
+    {
+      "id": "q17",
+      "category": "multi_document",
+      "question": "How do the Remote Work Policy and Employee Handbook relate to each other?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 2,
+      "grounded": true,
+      "total_latency_ms": 7.71
+    },
+    {
+      "id": "q18",
+      "category": "multi_document",
+      "question": "How does a support SLA breach risk get escalated to engineering?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 5.24
+    },
+    {
+      "id": "q19",
+      "category": "multi_document",
+      "question": "Are beta features covered by the support SLA and who decides what's in beta?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 4,
+      "grounded": true,
+      "total_latency_ms": 6.75
+    },
+    {
+      "id": "q20",
+      "category": "multi_document",
+      "question": "What retention period applies to security incident logs and who set that policy?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 6.35
+    },
+    {
+      "id": "q21",
+      "category": "synthesis",
+      "question": "If an employee wants to take 5 consecutive vacation days, whose approval do they need and how far ahead should they ask?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 2,
+      "grounded": true,
+      "total_latency_ms": 7.01
+    },
+    {
+      "id": "q22",
+      "category": "synthesis",
+      "question": "Combining the security and facilities policies, what should happen if a badge is lost and device compromise is also suspected?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 2,
+      "grounded": true,
+      "total_latency_ms": 7.68
+    },
+    {
+      "id": "q23",
+      "category": "synthesis",
+      "question": "Is a $1,200 expense reimbursable and what approval chain does it need?",
+      "expected_no_answer": false,
+      "produced_no_answer": true,
+      "citations_valid": true,
+      "num_citations": 0,
+      "grounded": true,
+      "total_latency_ms": 6.66
+    },
+    {
+      "id": "q24",
+      "category": "distractor",
+      "question": "What is the vacation carryover limit, and does the budget planning timeline affect it?",
+      "expected_no_answer": false,
+      "produced_no_answer": true,
+      "citations_valid": true,
+      "num_citations": 0,
+      "grounded": true,
+      "total_latency_ms": 6.62
+    },
+    {
+      "id": "q25",
+      "category": "distractor",
+      "question": "Does the on-call engineering rotation affect employee performance ratings?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 6.1
+    },
+    {
+      "id": "q26",
+      "category": "no_answer",
+      "question": "What is the company's policy on providing employees with company cars?",
+      "expected_no_answer": true,
+      "produced_no_answer": true,
+      "citations_valid": true,
+      "num_citations": 0,
+      "grounded": true,
+      "total_latency_ms": 6.57
+    },
+    {
+      "id": "q27",
+      "category": "no_answer",
+      "question": "How many hours of paid volunteer time off do employees get per year?",
+      "expected_no_answer": true,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 3,
+      "grounded": true,
+      "total_latency_ms": 8.33
+    },
+    {
+      "id": "q28",
+      "category": "no_answer",
+      "question": "What cryptocurrency does the company accept for expense reimbursement?",
+      "expected_no_answer": true,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 1,
+      "grounded": true,
+      "total_latency_ms": 6.52
+    },
+    {
+      "id": "q29",
+      "category": "edge_case",
+      "question": "What is the visa support notice period, given the conflicting guidance in older documents?",
+      "expected_no_answer": false,
+      "produced_no_answer": false,
+      "citations_valid": true,
+      "num_citations": 2,
+      "grounded": true,
+      "total_latency_ms": 5.64
+    },
+    {
+      "id": "q30",
+      "category": "edge_case",
+      "question": "?",
+      "expected_no_answer": true,
+      "produced_no_answer": true,
+      "citations_valid": true,
+      "num_citations": 0,
+      "grounded": true,
+      "total_latency_ms": 4.01
+    }
+  ]
+}
